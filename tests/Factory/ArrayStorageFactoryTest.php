@@ -33,8 +33,12 @@ class ArrayStorageFactoryTest extends TestCase
                 'my_feature_1' => [],
                 'my_feature_2' => null,
                 'my_feature_3' => false,
-                'my_feature_4' => ['enabled' => true, 'description' => 'Lorem Ipsum'],
-                'my_feature_5' => ['enabled' => true],
+                'my_feature_4' => [
+                    'enabled' => true,
+                    'description' => 'Lorem Ipsum',
+                    'expression' => 'is_granted(\'ROLE_ADMIN\')',
+                ],
+                'my_feature_5' => ['enabled' => true, 'expression' => 'is_granted(\'ROLE_ADMIN\')'],
             ],
         ];
 
@@ -54,6 +58,7 @@ class ArrayStorageFactoryTest extends TestCase
         $this->assertInstanceOf(FeatureInterface::class, $features['my_feature_1']);
         $this->assertSame('my_feature_1', $features['my_feature_1']->getKey());
         $this->assertTrue($features['my_feature_1']->isEnabled());
+        $this->assertNull($features['my_feature_1']->getExpression());
         $this->assertNull($features['my_feature_1']->getDescription());
         $this->assertSame(
             [
@@ -67,6 +72,7 @@ class ArrayStorageFactoryTest extends TestCase
         $this->assertInstanceOf(FeatureInterface::class, $features['my_feature_2']);
         $this->assertSame('my_feature_2', $features['my_feature_2']->getKey());
         $this->assertTrue($features['my_feature_2']->isEnabled());
+        $this->assertNull($features['my_feature_2']->getExpression());
         $this->assertNull($features['my_feature_2']->getDescription());
         $this->assertSame(
             [
@@ -80,6 +86,7 @@ class ArrayStorageFactoryTest extends TestCase
         $this->assertInstanceOf(FeatureInterface::class, $features['my_feature_3']);
         $this->assertSame('my_feature_3', $features['my_feature_3']->getKey());
         $this->assertFalse($features['my_feature_3']->isEnabled());
+        $this->assertNull($features['my_feature_3']->getExpression());
         $this->assertNull($features['my_feature_3']->getDescription());
         $this->assertSame(
             [
@@ -93,6 +100,7 @@ class ArrayStorageFactoryTest extends TestCase
         $this->assertInstanceOf(FeatureInterface::class, $features['my_feature_4']);
         $this->assertSame('my_feature_4', $features['my_feature_4']->getKey());
         $this->assertTrue($features['my_feature_4']->isEnabled());
+        $this->assertSame('is_granted(\'ROLE_ADMIN\')', $features['my_feature_4']->getExpression());
         $this->assertSame('Lorem Ipsum', $features['my_feature_4']->getDescription());
         $this->assertSame(
             [
@@ -106,6 +114,7 @@ class ArrayStorageFactoryTest extends TestCase
         $this->assertInstanceOf(FeatureInterface::class, $features['my_feature_5']);
         $this->assertSame('my_feature_5', $features['my_feature_5']->getKey());
         $this->assertTrue($features['my_feature_5']->isEnabled());
+        $this->assertSame('is_granted(\'ROLE_ADMIN\')', $features['my_feature_5']->getExpression());
         $this->assertNull($features['my_feature_5']->getDescription());
         $this->assertSame(
             [

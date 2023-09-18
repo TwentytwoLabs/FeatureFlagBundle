@@ -38,7 +38,8 @@ class FeatureCollectorTest extends TestCase
             ->method('toArray')
             ->willReturn(['key' => 'feature1', 'enabled' => false, 'description' => ''])
         ;
-        $feature1->expects($this->once())->method('isEnabled')->willReturn(false);
+        $feature1->expects($this->once())->method('getKey')->willReturn('feature-1');
+        $feature1->expects($this->never())->method('isEnabled');
 
         $feature2 = $this->createMock(FeatureInterface::class);
         $feature2
@@ -46,7 +47,8 @@ class FeatureCollectorTest extends TestCase
             ->method('toArray')
             ->willReturn(['key' => 'feature2', 'enabled' => true, 'description' => ''])
         ;
-        $feature2->expects($this->once())->method('isEnabled')->willReturn(true);
+        $feature2->expects($this->once())->method('getKey')->willReturn('feature-2');
+        $feature2->expects($this->never())->method('isEnabled');
 
         $feature3 = $this->createMock(FeatureInterface::class);
         $feature3
@@ -54,15 +56,34 @@ class FeatureCollectorTest extends TestCase
             ->method('toArray')
             ->willReturn(['key' => 'feature3', 'enabled' => true, 'description' => ''])
         ;
-        $feature3->expects($this->once())->method('isEnabled')->willReturn(true);
+        $feature3->expects($this->once())->method('getKey')->willReturn('feature-3');
+        $feature3->expects($this->never())->method('isEnabled');
 
         $this->emptyManager->expects($this->exactly(1))->method('getName')->willReturn('baz');
+        $this->emptyManager->expects($this->never())->method('isEnabled');
         $this->emptyManager->expects($this->once())->method('all')->willReturn([]);
 
+        $matcher = $this->exactly(2);
         $this->fooManager->expects($this->exactly(3))->method('getName')->willReturn('foo');
+        $this->fooManager
+            ->expects($matcher)
+            ->method('isEnabled')
+            ->willReturnCallback(function (string $key) use ($matcher) {
+                match ($matcher->numberOfInvocations()) {
+                    1 => $this->assertEquals('feature-1', $key),
+                    2 => $this->assertEquals('feature-2', $key),
+                };
+
+                return match ($matcher->numberOfInvocations()) {
+                    1 => false,
+                    2 => true,
+                };
+            })
+        ;
         $this->fooManager->expects($this->once())->method('all')->willReturn([$feature1, $feature2]);
 
         $this->barManager->expects($this->exactly(2))->method('getName')->willReturn('bar');
+        $this->barManager->expects($this->once())->method('isEnabled')->with('feature-3')->willReturn(true);
         $this->barManager->expects($this->once())->method('all')->willReturn([$feature3]);
 
         $request = $this->createMock(Request::class);

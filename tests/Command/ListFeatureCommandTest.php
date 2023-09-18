@@ -74,7 +74,12 @@ class ListFeatureCommandTest extends TestCase
             $manager = $this->createMock(FeatureManagerInterface::class);
             $manager->expects($this->once())->method('getName')->willReturn($managerName);
             $manager->expects($this->once())->method('all')->willReturn(array_map(function (array $feature) {
-                return new Feature($feature['name'], $feature['enabled'], $feature['description'] ?? '');
+                return new Feature(
+                    key: $feature['name'],
+                    enabled: $feature['enabled'],
+                    expression: $feature['expression'] ?? null,
+                    description: $feature['description'] ?? null
+                );
             }, $featuresDefinition['options']['features']));
 
             $managers[] = $manager;

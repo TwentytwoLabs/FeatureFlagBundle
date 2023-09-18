@@ -6,7 +6,7 @@ namespace TwentytwoLabs\FeatureFlagBundle\Tests\Manager;
 
 use PHPUnit\Framework\TestCase;
 use TwentytwoLabs\FeatureFlagBundle\Manager\ChainedFeatureManager;
-use TwentytwoLabs\FeatureFlagBundle\Manager\DefaultFeatureManager;
+use TwentytwoLabs\FeatureFlagBundle\Manager\FeatureManagerInterface;
 
 /**
  * @codingStandardsIgnoreFile
@@ -16,13 +16,13 @@ use TwentytwoLabs\FeatureFlagBundle\Manager\DefaultFeatureManager;
 class ChainedFeatureManagerTest extends TestCase
 {
     private ChainedFeatureManager $manager;
-    private DefaultFeatureManager $managerFoo;
-    private DefaultFeatureManager $managerBar;
+    private FeatureManagerInterface $managerFoo;
+    private FeatureManagerInterface $managerBar;
 
     protected function setUp(): void
     {
-        $this->managerFoo = $this->createMock(DefaultFeatureManager::class);
-        $this->managerBar = $this->createMock(DefaultFeatureManager::class);
+        $this->managerFoo = $this->createMock(FeatureManagerInterface::class);
+        $this->managerBar = $this->createMock(FeatureManagerInterface::class);
 
         $this->manager = new ChainedFeatureManager(new \ArrayObject([$this->managerFoo, $this->managerBar]));
     }

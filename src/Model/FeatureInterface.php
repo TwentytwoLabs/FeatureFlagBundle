@@ -10,6 +10,8 @@ interface FeatureInterface
 
     public function isEnabled(): bool;
 
+    public function getExpression(): ?string;
+
     public function getDescription(): ?string;
 
     public function toArray(): array;
