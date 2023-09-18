@@ -30,7 +30,7 @@ class FeatureListenerTest extends TestCase
 
     public function testShouldValidateEvent(): void
     {
-        static::assertSame(['kernel.controller' => 'onKernelController'], FeatureListener::getSubscribedEvents());
+        $this->assertSame(['kernel.controller' => 'onKernelController'], FeatureListener::getSubscribedEvents());
     }
 
     public function testShouldNotCheckFeaturesBecauseFeaturesIsEmpty(): void

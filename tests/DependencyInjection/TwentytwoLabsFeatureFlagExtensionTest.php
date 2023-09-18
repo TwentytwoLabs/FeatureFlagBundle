@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TwentytwoLabs\FeatureFlagBundle\DependencyInjection;
 
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
+use TwentytwoLabs\FeatureFlagBundle\Command\ListFeatureCommand;
 use TwentytwoLabs\FeatureFlagBundle\DataCollector\FeatureCollector;
 use TwentytwoLabs\FeatureFlagBundle\Twig\Extension\FeatureFlagExtension;
 
@@ -32,6 +33,7 @@ class TwentytwoLabsFeatureFlagExtensionTest extends AbstractExtensionTestCase
 
         $this->assertContainerBuilderHasService(FeatureCollector::class);
         $this->assertContainerBuilderHasService(FeatureFlagExtension::class);
+        $this->assertContainerBuilderHasService(ListFeatureCommand::class);
         $this->assertContainerBuilderHasService('twenty-two-labs.feature-flags.factory.array');
         $this->assertContainerBuilderHasService('twenty-two-labs.feature-flags.manager');
         $this->assertContainerBuilderNotHasService('twenty-two-labs.feature-flags.manager.manager_foo');
@@ -72,6 +74,7 @@ class TwentytwoLabsFeatureFlagExtensionTest extends AbstractExtensionTestCase
 
         $this->assertContainerBuilderHasService(FeatureCollector::class);
         $this->assertContainerBuilderHasService(FeatureFlagExtension::class);
+        $this->assertContainerBuilderHasService(ListFeatureCommand::class);
         $this->assertContainerBuilderHasService('twenty-two-labs.feature-flags.factory.array');
         $this->assertContainerBuilderHasService('twenty-two-labs.feature-flags.manager');
         $this->assertContainerBuilderHasService('twenty-two-labs.feature-flags.manager.manager_foo');

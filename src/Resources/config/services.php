@@ -6,6 +6,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 use TwentytwoLabs\FeatureFlagBundle\EventListener\ControllerListener;
 use TwentytwoLabs\FeatureFlagBundle\EventListener\FeatureListener;
 use TwentytwoLabs\FeatureFlagBundle\Factory\ArrayStorageFactory;
+use TwentytwoLabs\FeatureFlagBundle\Factory\OrmStorageFactory;
 use TwentytwoLabs\FeatureFlagBundle\Manager\ChainedFeatureManager;
 use TwentytwoLabs\FeatureFlagBundle\Manager\FeatureManagerInterface;
 
@@ -16,6 +17,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set('twenty-two-labs.feature-flags.factory.array', ArrayStorageFactory::class);
+    $services->set('twenty-two-labs.feature-flags.factory.orm', OrmStorageFactory::class)
+        ->args([service('doctrine.orm.default_entity_manager')->nullOnInvalid()]);
 
     $services->instanceof(FeatureManagerInterface::class)
         ->tag('twenty-two-labs.feature-flags.manager');
