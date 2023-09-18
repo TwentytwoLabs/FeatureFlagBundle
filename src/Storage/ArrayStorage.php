@@ -7,14 +7,19 @@ namespace TwentytwoLabs\FeatureFlagBundle\Storage;
 use TwentytwoLabs\FeatureFlagBundle\Model\Feature;
 use TwentytwoLabs\FeatureFlagBundle\Model\FeatureInterface;
 
-class ArrayStorage implements StorageInterface
+final class ArrayStorage implements StorageInterface
 {
     private array $features;
 
     public function __construct(array $options = [])
     {
         $this->features = array_map(function (array $feature) {
-            return new Feature($feature['name'], $feature['enabled'], $feature['description'] ?? null);
+            return new Feature(
+                key: $feature['name'],
+                enabled: $feature['enabled'],
+                expression: $feature['expression'] ?? null,
+                description: $feature['description'] ?? null
+            );
         }, $options['features']);
     }
 

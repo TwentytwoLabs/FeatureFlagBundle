@@ -6,6 +6,6 @@ namespace TwentytwoLabs\FeatureFlagBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class TwentytwoLabsFeatureFlagBundle extends Bundle
+final class TwentytwoLabsFeatureFlagBundle extends Bundle
 {
 }

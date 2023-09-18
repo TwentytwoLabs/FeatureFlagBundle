@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 use TwentytwoLabs\FeatureFlagBundle\Manager\ChainedFeatureManager;
 
-class FeatureCollector extends DataCollector
+final class FeatureCollector extends DataCollector
 {
     private ChainedFeatureManager $manager;
 
@@ -37,13 +37,14 @@ class FeatureCollector extends DataCollector
         foreach ($this->manager->getManagers() as $manager) {
             $features[$manager->getName()] = [];
             foreach ($manager->all() as $feature) {
-                $features[$manager->getName()][] = $feature->toArray();
+                $item = array_merge($feature->toArray(), ['enabled' => $manager->isEnabled($feature->getKey())]);
 
-                if ($feature->isEnabled()) {
+                if ($item['enabled']) {
                     ++$activeFeatureCount;
                 }
-
                 ++$totalFeatureCount;
+
+                $features[$manager->getName()][] = $item;
             }
         }
 

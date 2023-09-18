@@ -8,12 +8,14 @@ final class Feature implements FeatureInterface
 {
     private string $key;
     private bool $enabled;
+    private ?string $expression;
     private ?string $description;
 
-    public function __construct(string $key, bool $enabled, ?string $description)
+    public function __construct(string $key, bool $enabled, ?string $expression, ?string $description)
     {
         $this->key = $key;
         $this->enabled = $enabled;
+        $this->expression = $expression;
         $this->description = $description;
     }
 
@@ -25,6 +27,11 @@ final class Feature implements FeatureInterface
     public function isEnabled(): bool
     {
         return $this->enabled;
+    }
+
+    public function getExpression(): ?string
+    {
+        return $this->expression;
     }
 
     public function getDescription(): ?string

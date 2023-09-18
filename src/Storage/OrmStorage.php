@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
 use TwentytwoLabs\FeatureFlagBundle\Model\FeatureInterface;
 
-class OrmStorage implements StorageInterface
+final class OrmStorage implements StorageInterface
 {
     private ObjectRepository $objectRepository;
 

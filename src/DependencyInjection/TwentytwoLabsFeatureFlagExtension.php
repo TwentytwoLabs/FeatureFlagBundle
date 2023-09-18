@@ -41,6 +41,7 @@ class TwentytwoLabsFeatureFlagExtension extends Extension
                 ->register(sprintf('twenty-two-labs.feature-flags.manager.%s', $name), DefaultFeatureManager::class)
                 ->addArgument($name)
                 ->addArgument(new Reference(sprintf('twenty-two-labs.feature-flags.storage.%s', $name)))
+                ->addArgument(new Reference('twenty-two-labs.feature-flags.checker.expression_language'))
                 ->addTag('twenty-two-labs.feature-flags.manager')
             ;
         }

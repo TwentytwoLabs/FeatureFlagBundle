@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @SuppressWarnings(PHPMD)
  */
-final class FeatureTest extends TestCase
+class FeatureTest extends TestCase
 {
     public function testShouldValidateToArrayResult(): void
     {

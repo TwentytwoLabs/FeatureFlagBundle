@@ -8,7 +8,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use TwentytwoLabs\FeatureFlagBundle\Storage\ArrayStorage;
 use TwentytwoLabs\FeatureFlagBundle\Storage\StorageInterface;
 
-class ArrayStorageFactory extends AbstractStorageFactory
+final class ArrayStorageFactory extends AbstractStorageFactory
 {
     public function createStorage(string $storageName, array $options = []): StorageInterface
     {
@@ -26,7 +26,7 @@ class ArrayStorageFactory extends AbstractStorageFactory
     private function transform(array $options): array
     {
         foreach ($options['features'] as $name => $features) {
-            $feature = ['name' => $name, 'enabled' => true, 'description' => null];
+            $feature = ['name' => $name, 'enabled' => true, 'expression' => null, 'description' => null];
 
             if (\is_bool($features)) {
                 $feature['enabled'] = $features;

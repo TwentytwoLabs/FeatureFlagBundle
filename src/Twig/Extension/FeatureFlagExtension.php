@@ -8,7 +8,7 @@ use TwentytwoLabs\FeatureFlagBundle\Manager\ChainedFeatureManager;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-class FeatureFlagExtension extends AbstractExtension
+final class FeatureFlagExtension extends AbstractExtension
 {
     private ChainedFeatureManager $manager;
 
