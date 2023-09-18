@@ -48,9 +48,10 @@ twentytwo_labs_feature_flag:
 
 The factories that come with this bundle can be found in the table below.
 
-| Factory service id                           | Options    |
-|----------------------------------------------|------------|
-| twenty-two-labs.feature-flags.factory.array  | `features` |
+| Factory service id                          | Options    |
+|---------------------------------------------|------------|
+| twenty-two-labs.feature-flags.factory.array | `features` |
+| twenty-two-labs.feature-flags.factory.orm   | `class`    |
 
 #### Example configuration
 
