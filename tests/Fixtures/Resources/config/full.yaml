@@ -1,0 +1,21 @@
+twentytwo_labs_feature_flag:
+   default_manager: manager_foo
+   managers:
+      manager_foo:
+         factory: novaway_feature_flag.factory.array
+         options:
+            features:
+               my_feature_1: ~
+               my_feature_2: true
+               my_feature_3:
+                  enabled: false
+               my_feature_4:
+                  enabled: true
+                  description: MyFeature4 description text
+      manager_bar:
+         factory: novaway_feature_flag.factory.array
+         options:
+            features:
+               my_feature_5: false
+               my_feature_6: []
+               my_feature_7: false
