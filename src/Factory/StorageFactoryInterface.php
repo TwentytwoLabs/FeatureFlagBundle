@@ -8,5 +8,8 @@ use TwentytwoLabs\FeatureFlagBundle\Storage\StorageInterface;
 
 interface StorageFactoryInterface
 {
+    /**
+     * @param array<string, mixed> $options
+     */
     public function createStorage(string $storageName, array $options = []): StorageInterface;
 }

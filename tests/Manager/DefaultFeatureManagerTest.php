@@ -4,21 +4,17 @@ declare(strict_types=1);
 
 namespace TwentytwoLabs\FeatureFlagBundle\Tests\Manager;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use TwentytwoLabs\FeatureFlagBundle\Checker\ExpressionLanguageChecker;
 use TwentytwoLabs\FeatureFlagBundle\Manager\DefaultFeatureManager;
 use PHPUnit\Framework\TestCase;
 use TwentytwoLabs\FeatureFlagBundle\Model\FeatureInterface;
 use TwentytwoLabs\FeatureFlagBundle\Storage\StorageInterface;
 
-/**
- * @codingStandardsIgnoreFile
- *
- * @SuppressWarnings(PHPMD)
- */
-class DefaultFeatureManagerTest extends TestCase
+final class DefaultFeatureManagerTest extends TestCase
 {
-    private StorageInterface $storage;
-    private ExpressionLanguageChecker $expressionLanguageChecker;
+    private StorageInterface|MockObject $storage;
+    private ExpressionLanguageChecker|MockObject $expressionLanguageChecker;
 
     protected function setUp(): void
     {

@@ -4,24 +4,20 @@ declare(strict_types=1);
 
 namespace TwentytwoLabs\FeatureFlagBundle\Tests\EventListener;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\GoneHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use TwentytwoLabs\FeatureFlagBundle\EventListener\FeatureListener;
 use TwentytwoLabs\FeatureFlagBundle\Manager\ChainedFeatureManager;
 use TwentytwoLabs\FeatureFlagBundle\Tests\Fixtures\Controller\FooController;
 
-/**
- * @codingStandardsIgnoreFile
- *
- * @SuppressWarnings(PHPMD)
- */
-class FeatureListenerTest extends TestCase
+final class FeatureListenerTest extends TestCase
 {
-    private ChainedFeatureManager $manager;
+    private ChainedFeatureManager|MockObject $manager;
 
     protected function setUp(): void
     {
@@ -45,16 +41,15 @@ class FeatureListenerTest extends TestCase
         $request = $this->createMock(Request::class);
         $request->attributes = $attributes;
 
-        $event = new ControllerEvent($kernel, new FooController(), $request, null);
-        $controller = new FeatureListener($this->manager);
-        $controller->onKernelController($event);
+        $controller = $this->getListener();
+        $controller->onKernelController(new ControllerEvent($kernel, new FooController(), $request, null));
     }
 
     public function testShouldNotCheckFeaturesBecauseFeatureNotExist(): void
     {
-        $this->expectException(NotFoundHttpException::class);
+        $this->expectException(GoneHttpException::class);
 
-        $this->manager->expects($this->once())->method('isEnabled')->willReturn(false);
+        $this->manager->expects($this->once())->method('isEnabled')->with('bar')->willReturn(false);
 
         $kernel = $this->createMock(HttpKernelInterface::class);
 
@@ -63,20 +58,37 @@ class FeatureListenerTest extends TestCase
             ->expects($this->once())
             ->method('get')
             ->with('_features', [])
-            ->willReturn(['bar' => ['feature' => 'bar', 'enabled' => true]])
+            ->willReturn([['feature' => 'bar', 'enabled' => true]])
         ;
 
         $request = $this->createMock(Request::class);
         $request->attributes = $attributes;
 
-        $event = new ControllerEvent($kernel, new FooController(), $request, null);
-        $controller = new FeatureListener($this->manager);
-        $controller->onKernelController($event);
+        $controller = $this->getListener();
+        $controller->onKernelController(new ControllerEvent($kernel, new FooController(), $request, null));
     }
 
     public function testShouldCheckFeatures(): void
     {
-        $this->manager->expects($this->once())->method('isEnabled')->willReturn(true);
+        $matcher = $this->exactly(2);
+        $this->manager
+            ->expects($matcher)
+            ->method('isEnabled')
+            ->willReturnOnConsecutiveCalls(true, false)
+            ->willReturnCallback(function (string $name) use ($matcher) {
+                match ($matcher->numberOfInvocations()) {
+                    1 => $this->assertSame('bar', $name),
+                    2 => $this->assertSame('baz', $name),
+                    default => throw new \Exception(sprintf('Method "isEnabled" should call %d times', 2)),
+                };
+
+                return match ($matcher->numberOfInvocations()) {
+                    1 => true,
+                    2 => false,
+                    default => throw new \Exception(sprintf('Method "isEnabled" should call %d times', 2)),
+                };
+            })
+        ;
 
         $kernel = $this->createMock(HttpKernelInterface::class);
 
@@ -85,14 +97,18 @@ class FeatureListenerTest extends TestCase
             ->expects($this->once())
             ->method('get')
             ->with('_features', [])
-            ->willReturn(['bar' => ['feature' => 'bar', 'enabled' => true]])
+            ->willReturn([['feature' => 'bar'], ['feature' => 'baz', 'enabled' => false]])
         ;
 
         $request = $this->createMock(Request::class);
         $request->attributes = $attributes;
 
-        $event = new ControllerEvent($kernel, new FooController(), $request, null);
-        $controller = new FeatureListener($this->manager);
-        $controller->onKernelController($event);
+        $controller = $this->getListener();
+        $controller->onKernelController(new ControllerEvent($kernel, new FooController(), $request, null));
+    }
+
+    private function getListener(): FeatureListener
+    {
+        return new FeatureListener($this->manager);
     }
 }

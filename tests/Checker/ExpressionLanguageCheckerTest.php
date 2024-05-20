@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Checker;
+namespace TwentytwoLabs\FeatureFlagBundle\Tests\Checker;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
@@ -16,19 +17,14 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use TwentytwoLabs\FeatureFlagBundle\Checker\ExpressionLanguageChecker;
 
-/**
- * @codingStandardsIgnoreFile
- *
- * @SuppressWarnings(PHPMD)
- */
-class ExpressionLanguageCheckerTest extends TestCase
+final class ExpressionLanguageCheckerTest extends TestCase
 {
-    private ExpressionLanguage $expressionLanguage;
-    private AuthenticationTrustResolverInterface $authenticationTrustResolver;
-    private RoleHierarchyInterface $roleHierarchy;
-    private TokenStorageInterface $tokenStorage;
-    private AuthorizationCheckerInterface $authorizationChecker;
-    private LoggerInterface $logger;
+    private ExpressionLanguage|MockObject $expressionLanguage;
+    private AuthenticationTrustResolverInterface|MockObject $authenticationTrustResolver;
+    private RoleHierarchyInterface|MockObject $roleHierarchy;
+    private TokenStorageInterface|MockObject $tokenStorage;
+    private AuthorizationCheckerInterface|MockObject $authorizationChecker;
+    private LoggerInterface|MockObject $logger;
 
     protected function setUp(): void
     {
@@ -40,7 +36,7 @@ class ExpressionLanguageCheckerTest extends TestCase
         $this->logger = $this->createMock(LoggerInterface::class);
     }
 
-    public function testShouldThrowExceptionBecauseTokenStorageIsNotSet()
+    public function testShouldThrowExceptionBecauseTokenStorageIsNotSet(): void
     {
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('The "symfony/security" library must be installed to use the "security" attribute.');
@@ -65,7 +61,7 @@ class ExpressionLanguageCheckerTest extends TestCase
         $checker->isGranted('is_granted(\'ROLE_ADMIN\')');
     }
 
-    public function testShouldThrowExceptionBecauseAuthenticationTrustResolverIsNotSet()
+    public function testShouldThrowExceptionBecauseAuthenticationTrustResolverIsNotSet(): void
     {
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('The "symfony/security" library must be installed to use the "security" attribute.');
@@ -90,7 +86,7 @@ class ExpressionLanguageCheckerTest extends TestCase
         $checker->isGranted('is_granted(\'ROLE_ADMIN\')');
     }
 
-    public function testShouldThrowExceptionBecauseExpressionLanguageIsNotSet()
+    public function testShouldThrowExceptionBecauseExpressionLanguageIsNotSet(): void
     {
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('The "symfony/expression-language" library must be installed to use the "security" attribute.');
@@ -115,7 +111,7 @@ class ExpressionLanguageCheckerTest extends TestCase
         $checker->isGranted('is_granted(\'ROLE_ADMIN\')');
     }
 
-    public function testShouldGrantedWhenCurrentUserIsNotSet()
+    public function testShouldGrantedWhenCurrentUserIsNotSet(): void
     {
         $this->roleHierarchy
             ->expects($this->never())
@@ -183,7 +179,7 @@ class ExpressionLanguageCheckerTest extends TestCase
         $this->assertFalse($checker->isGranted('is_granted(\'ROLE_ADMIN\')'));
     }
 
-    public function testShouldGrantedWhenCurrentUserIsNotSetAndWithOutLogger()
+    public function testShouldGrantedWhenCurrentUserIsNotSetAndWithOutLogger(): void
     {
         $this->roleHierarchy
             ->expects($this->never())

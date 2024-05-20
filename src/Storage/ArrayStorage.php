@@ -9,8 +9,12 @@ use TwentytwoLabs\FeatureFlagBundle\Model\FeatureInterface;
 
 final class ArrayStorage implements StorageInterface
 {
+    /** @var FeatureInterface[]  */
     private array $features;
 
+    /**
+     * @param array<string, array<string, mixed>> $options
+     */
     public function __construct(array $options = [])
     {
         $this->features = array_map(function (array $feature) {
@@ -28,8 +32,14 @@ final class ArrayStorage implements StorageInterface
         return $this->features;
     }
 
-    public function get(string $feature): ?FeatureInterface
+    public function get(string $key): ?FeatureInterface
     {
-        return $this->features[$feature] ?? null;
+        foreach ($this->features as $feature) {
+            if ($feature->getKey() === $key) {
+                return $feature;
+            }
+        }
+
+        return null;
     }
 }

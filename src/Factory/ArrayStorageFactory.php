@@ -23,6 +23,11 @@ final class ArrayStorageFactory extends AbstractStorageFactory
         ;
     }
 
+    /**
+     * @param array<int|string, mixed> $options
+     *
+     * @return array<int|string, mixed>
+     */
     private function transform(array $options): array
     {
         foreach ($options['features'] as $name => $features) {

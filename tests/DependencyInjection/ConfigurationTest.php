@@ -10,12 +10,7 @@ use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use TwentytwoLabs\FeatureFlagBundle\DependencyInjection\Configuration;
 use TwentytwoLabs\FeatureFlagBundle\DependencyInjection\TwentytwoLabsFeatureFlagExtension;
 
-/**
- * @codingStandardsIgnoreFile
- *
- * @SuppressWarnings(PHPMD)
- */
-class ConfigurationTest extends AbstractExtensionConfigurationTestCase
+final class ConfigurationTest extends AbstractExtensionConfigurationTestCase
 {
     public function testShouldCheckEmptyConfiguration(): void
     {

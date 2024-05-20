@@ -7,8 +7,8 @@ namespace TwentytwoLabs\FeatureFlagBundle\EventListener;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use TwentytwoLabs\FeatureFlagBundle\Attribute\Feature;
-use TwentytwoLabs\FeatureFlagBundle\Model\FeatureInterface;
+use TwentytwoLabs\FeatureFlagBundle\Attribute\IsFeatureDisabled;
+use TwentytwoLabs\FeatureFlagBundle\Attribute\IsFeatureEnabled;
 
 class ControllerListener implements EventSubscriberInterface
 {
@@ -33,7 +33,14 @@ class ControllerListener implements EventSubscriberInterface
         $features = [];
         foreach ($this->resolveFeatures($class, $method) as $key => $feature) {
             if (isset($features[$key])) {
-                throw new \UnexpectedValueException(sprintf('Feature "%s" is defined more than once in %s::%s', $key, $className, $controller[1]));
+                throw new \UnexpectedValueException(
+                    sprintf(
+                        'Feature "%s" is defined more than once in %s::%s',
+                        $key,
+                        $className,
+                        $controller[1]
+                    )
+                );
             }
 
             $features[$key] = $feature;
@@ -43,17 +50,23 @@ class ControllerListener implements EventSubscriberInterface
         $request->attributes->set('_features', array_merge($request->attributes->get('_features', []), $features));
     }
 
+    /**
+     * @param \ReflectionClass<object> $class
+     * @param \ReflectionMethod $method
+     *
+     * @return iterable<string, array<string, mixed>>
+     */
     private function resolveFeatures(\ReflectionClass $class, \ReflectionMethod $method): iterable
     {
-        foreach ($class->getAttributes(Feature::class) as $attribute) {
-            /** @var Feature $feature */
-            $feature = $attribute->newInstance();
+        $attributes = [
+            ...$class->getAttributes(IsFeatureEnabled::class),
+            ...$class->getAttributes(IsFeatureDisabled::class),
+            ...$method->getAttributes(IsFeatureEnabled::class),
+            ...$method->getAttributes(IsFeatureDisabled::class),
+        ];
 
-            yield $feature->getName() => $feature->toArray();
-        }
-
-        foreach ($method->getAttributes(Feature::class) as $attribute) {
-            /** @var Feature $feature */
+        foreach ($attributes as $attribute) {
+            /** @var IsFeatureEnabled|IsFeatureDisabled $feature */
             $feature = $attribute->newInstance();
 
             yield $feature->getName() => $feature->toArray();

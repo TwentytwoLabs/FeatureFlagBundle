@@ -2,19 +2,16 @@
 
 declare(strict_types=1);
 
-namespace TwentytwoLabs\FeatureFlagBundle\DependencyInjection;
+namespace TwentytwoLabs\FeatureFlagBundle\Tests\DependencyInjection;
 
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
+use Symfony\Component\DependencyInjection\Reference;
 use TwentytwoLabs\FeatureFlagBundle\Command\ListFeatureCommand;
 use TwentytwoLabs\FeatureFlagBundle\DataCollector\FeatureCollector;
+use TwentytwoLabs\FeatureFlagBundle\DependencyInjection\TwentytwoLabsFeatureFlagExtension;
 use TwentytwoLabs\FeatureFlagBundle\Twig\Extension\FeatureFlagExtension;
 
-/**
- * @codingStandardsIgnoreFile
- *
- * @SuppressWarnings(PHPMD)
- */
-class TwentytwoLabsFeatureFlagExtensionTest extends AbstractExtensionTestCase
+final class TwentytwoLabsFeatureFlagExtensionTest extends AbstractExtensionTestCase
 {
     protected function setUp(): void
     {
@@ -27,7 +24,7 @@ class TwentytwoLabsFeatureFlagExtensionTest extends AbstractExtensionTestCase
         return [new TwentytwoLabsFeatureFlagExtension()];
     }
 
-    public function testShouldLoadWithDefaultConfig()
+    public function testShouldLoadWithDefaultConfig(): void
     {
         $this->load();
 
@@ -42,13 +39,13 @@ class TwentytwoLabsFeatureFlagExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderNotHasService('twenty-two-labs.feature-flags.storage.manager_bar');
     }
 
-    public function testShouldLoadWithFullConfig()
+    public function testShouldLoadWithFullConfig(): void
     {
         $expectedConfig = [
             'default_manager' => 'manager_foo',
             'managers' => [
                 'manager_foo' => [
-                    'factory' => 'novaway_feature_flag.factory.array',
+                    'factory' => 'twenty-two-labs.feature-flags.factory.array',
                     'options' => [
                         'features' => [
                             'my_feature_1' => null,
@@ -59,7 +56,7 @@ class TwentytwoLabsFeatureFlagExtensionTest extends AbstractExtensionTestCase
                     ],
                 ],
                 'manager_bar' => [
-                    'factory' => 'novaway_feature_flag.factory.array',
+                    'factory' => 'twenty-two-labs.feature-flags.factory.array',
                     'options' => [
                         'features' => [
                             'my_feature_5' => false,
@@ -79,7 +76,30 @@ class TwentytwoLabsFeatureFlagExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasService('twenty-two-labs.feature-flags.manager');
         $this->assertContainerBuilderHasService('twenty-two-labs.feature-flags.manager.manager_foo');
         $this->assertContainerBuilderHasService('twenty-two-labs.feature-flags.storage.manager_foo');
+
+        $storageFoo = $this->container->findDefinition('twenty-two-labs.feature-flags.storage.manager_foo');
+        $this->assertFalse($storageFoo->isPublic());
+        $factory = $storageFoo->getFactory();
+        $this->assertIsArray($factory);
+        $this->assertCount(2, $factory);
+        $this->assertArrayHasKey(0, $factory);
+        $this->assertInstanceOf(Reference::class, $factory[0]);
+        $this->assertSame('twenty-two-labs.feature-flags.factory.array', (string) $factory[0]);
+        $this->assertArrayHasKey(1, $factory);
+        $this->assertSame('createStorage', $factory[1]);
+
         $this->assertContainerBuilderHasService('twenty-two-labs.feature-flags.manager.manager_bar');
         $this->assertContainerBuilderHasService('twenty-two-labs.feature-flags.storage.manager_bar');
+
+        $storageBar = $this->container->findDefinition('twenty-two-labs.feature-flags.storage.manager_bar');
+        $this->assertFalse($storageBar->isPublic());
+        $factory = $storageBar->getFactory();
+        $this->assertIsArray($factory);
+        $this->assertCount(2, $factory);
+        $this->assertArrayHasKey(0, $factory);
+        $this->assertInstanceOf(Reference::class, $factory[0]);
+        $this->assertSame('twenty-two-labs.feature-flags.factory.array', (string) $factory[0]);
+        $this->assertArrayHasKey(1, $factory);
+        $this->assertSame('createStorage', $factory[1]);
     }
 }

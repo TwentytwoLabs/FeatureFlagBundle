@@ -4,20 +4,16 @@ declare(strict_types=1);
 
 namespace TwentytwoLabs\FeatureFlagBundle\Tests\Manager;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use TwentytwoLabs\FeatureFlagBundle\Manager\ChainedFeatureManager;
 use TwentytwoLabs\FeatureFlagBundle\Manager\FeatureManagerInterface;
 
-/**
- * @codingStandardsIgnoreFile
- *
- * @SuppressWarnings(PHPMD)
- */
-class ChainedFeatureManagerTest extends TestCase
+final class ChainedFeatureManagerTest extends TestCase
 {
-    private ChainedFeatureManager $manager;
-    private FeatureManagerInterface $managerFoo;
-    private FeatureManagerInterface $managerBar;
+    private ChainedFeatureManager|MockObject $manager;
+    private FeatureManagerInterface|MockObject $managerFoo;
+    private FeatureManagerInterface|MockObject $managerBar;
 
     protected function setUp(): void
     {

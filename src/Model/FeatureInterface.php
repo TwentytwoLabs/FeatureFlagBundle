@@ -14,5 +14,8 @@ interface FeatureInterface
 
     public function getDescription(): ?string;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array;
 }

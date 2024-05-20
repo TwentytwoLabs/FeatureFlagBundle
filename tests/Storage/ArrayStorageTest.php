@@ -8,12 +8,7 @@ use TwentytwoLabs\FeatureFlagBundle\Model\FeatureInterface;
 use TwentytwoLabs\FeatureFlagBundle\Storage\ArrayStorage;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @codingStandardsIgnoreFile
- *
- * @SuppressWarnings(PHPMD)
- */
-class ArrayStorageTest extends TestCase
+final class ArrayStorageTest extends TestCase
 {
     public function testAllReturnEmptyArrayIfNoFeatureDefined(): void
     {
@@ -78,6 +73,9 @@ class ArrayStorageTest extends TestCase
         );
     }
 
+    /**
+     * @param array<string, array<string, mixed>> $features
+     */
     private function getStorage(array $features = []): ArrayStorage
     {
         return new ArrayStorage(['features' => $features]);

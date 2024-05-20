@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TwentytwoLabs\FeatureFlagBundle\Tests\Command;
 
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\MockObject\Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
 use TwentytwoLabs\FeatureFlagBundle\Command\ListFeatureCommand;
@@ -13,13 +14,11 @@ use TwentytwoLabs\FeatureFlagBundle\Manager\ChainedFeatureManager;
 use TwentytwoLabs\FeatureFlagBundle\Manager\FeatureManagerInterface;
 use TwentytwoLabs\FeatureFlagBundle\Model\Feature;
 
-/**
- * @codingStandardsIgnoreFile
- *
- * @SuppressWarnings(PHPMD)
- */
-class ListFeatureCommandTest extends TestCase
+final class ListFeatureCommandTest extends TestCase
 {
+    /**
+     * @param array<string, mixed> $features
+     */
     #[DataProvider('featuresProvider')]
     public function testConfiguredFeaturesAreDisplayedInAskedFormat(array $features, string $expectedOutput): void
     {
@@ -27,10 +26,13 @@ class ListFeatureCommandTest extends TestCase
         $commandTester->execute([]);
 
         $this->assertSame(Command::SUCCESS, $commandTester->getStatusCode());
-        $this->assertSame($expectedOutput, trim($commandTester->getDisplay()));
+        $this->assertSame($expectedOutput, trim(preg_replace('!\s+!', ' ', $commandTester->getDisplay())));
     }
 
-    public static function featuresProvider(): iterable
+    /**
+     * @return array<string, array<int, mixed>>
+     */
+    public static function featuresProvider(): array
     {
         return [
             'empty-features' => [
@@ -40,11 +42,21 @@ class ListFeatureCommandTest extends TestCase
                             'features' => [],
                         ]
                     ],
+                    'bar' => [
+                        'options' => [
+                            'features' => [],
+                        ]
+                    ],
                 ],
-                "foo\n---\n\n [WARNING] No feature declared.",
+                "foo --- [WARNING] No feature declared. bar --- [WARNING] No feature declared.",
             ],
             'with-features' => [
                 [
+                    'bar' => [
+                        'options' => [
+                            'features' => [],
+                        ],
+                    ],
                     'foo' => [
                         'options' => [
                             'features' => [
@@ -59,14 +71,18 @@ class ListFeatureCommandTest extends TestCase
                                     'description' => 'Feature 2 description',
                                 ],
                             ],
-                        ]
+                        ],
                     ],
                 ],
-                "foo\n---\n\n ---------- --------- ----------------------- \n  Name       Enabled   Description            \n ---------- --------- ----------------------- \n  feature1   Yes       Feature 1 description  \n  feature2   No        Feature 2 description  \n ---------- --------- -----------------------",
+                "bar --- [WARNING] No feature declared. foo --- ---------- --------- ----------------------- Name Enabled Description ---------- --------- ----------------------- feature1 Yes Feature 1 description feature2 No Feature 2 description ---------- --------- -----------------------",
             ],
         ];
     }
 
+    /**
+     * @param array<string, array<string, mixed>> $managersDefinition
+     * @throws Exception
+     */
     private function createCommandTester(array $managersDefinition = []): CommandTester
     {
         $managers = [];

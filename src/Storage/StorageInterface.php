@@ -8,7 +8,10 @@ use TwentytwoLabs\FeatureFlagBundle\Model\FeatureInterface;
 
 interface StorageInterface
 {
+    /**
+     * @return FeatureInterface[]
+     */
     public function all(): array;
 
-    public function get(string $feature): ?FeatureInterface;
+    public function get(string $key): ?FeatureInterface;
 }

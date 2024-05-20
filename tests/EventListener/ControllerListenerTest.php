@@ -13,12 +13,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use TwentytwoLabs\FeatureFlagBundle\EventListener\ControllerListener;
 use TwentytwoLabs\FeatureFlagBundle\Tests\Fixtures\Controller\DefaultController;
 
-/**
- * @codingStandardsIgnoreFile
- *
- * @SuppressWarnings(PHPMD)
- */
-class ControllerListenerTest extends TestCase
+final class ControllerListenerTest extends TestCase
 {
     public function testShouldValidateEvent(): void
     {
@@ -42,7 +37,7 @@ class ControllerListenerTest extends TestCase
         $request = $this->createMock(Request::class);
         $request->attributes = $attributes;
 
-        $listener = new ControllerListener();
+        $listener = $this->getListener();
         $listener->onKernelController(
             new ControllerEvent(
                 $kernel,
@@ -61,7 +56,10 @@ class ControllerListenerTest extends TestCase
             ->method('set')
             ->with(
                 '_features',
-                ['foo' => ['feature' => 'foo', 'enabled' => false], 'bar' => ['feature' => 'bar', 'enabled' => true]]
+                [
+                    'foo' => ['feature' => 'foo', 'enabled' => true],
+                    'bar' => ['feature' => 'bar', 'enabled' => false],
+                ]
             )
         ;
         $attributes
@@ -76,7 +74,7 @@ class ControllerListenerTest extends TestCase
         $request = $this->createMock(Request::class);
         $request->attributes = $attributes;
 
-        $listener = new ControllerListener();
+        $listener = $this->getListener();
         $listener->onKernelController(
             new ControllerEvent(
                 $kernel,
@@ -110,7 +108,7 @@ class ControllerListenerTest extends TestCase
         $request = $this->createMock(Request::class);
         $request->attributes = $attributes;
 
-        $listener = new ControllerListener();
+        $listener = $this->getListener();
         $listener->onKernelController(
             new ControllerEvent(
                 $kernel,
@@ -119,5 +117,10 @@ class ControllerListenerTest extends TestCase
                 null
             )
         );
+    }
+
+    private function getListener(): ControllerListener
+    {
+        return new ControllerListener();
     }
 }

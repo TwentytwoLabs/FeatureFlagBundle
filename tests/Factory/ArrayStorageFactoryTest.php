@@ -10,12 +10,7 @@ use TwentytwoLabs\FeatureFlagBundle\Factory\ArrayStorageFactory;
 use TwentytwoLabs\FeatureFlagBundle\Model\FeatureInterface;
 use TwentytwoLabs\FeatureFlagBundle\Storage\ArrayStorage;
 
-/**
- * @codingStandardsIgnoreFile
- *
- * @SuppressWarnings(PHPMD)
- */
-class ArrayStorageFactoryTest extends TestCase
+final class ArrayStorageFactoryTest extends TestCase
 {
     public function testShouldThrowExceptionBecauseFeaturesIsNotDefined(): void
     {

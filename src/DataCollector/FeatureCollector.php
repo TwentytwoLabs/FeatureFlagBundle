@@ -55,6 +55,9 @@ final class FeatureCollector extends DataCollector
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getFeatures(): array
     {
         return $this->data['features'];

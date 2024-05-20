@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TwentytwoLabs\FeatureFlagBundle\Tests\DataCollector;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,16 +13,11 @@ use TwentytwoLabs\FeatureFlagBundle\Manager\ChainedFeatureManager;
 use TwentytwoLabs\FeatureFlagBundle\Manager\FeatureManagerInterface;
 use TwentytwoLabs\FeatureFlagBundle\Model\FeatureInterface;
 
-/**
- * @codingStandardsIgnoreFile
- *
- * @SuppressWarnings(PHPMD)
- */
-class FeatureCollectorTest extends TestCase
+final class FeatureCollectorTest extends TestCase
 {
-    private FeatureManagerInterface $emptyManager;
-    private FeatureManagerInterface $fooManager;
-    private FeatureManagerInterface $barManager;
+    private FeatureManagerInterface|MockObject $emptyManager;
+    private FeatureManagerInterface|MockObject $fooManager;
+    private FeatureManagerInterface|MockObject $barManager;
 
     protected function setUp(): void
     {
@@ -72,11 +68,13 @@ class FeatureCollectorTest extends TestCase
                 match ($matcher->numberOfInvocations()) {
                     1 => $this->assertEquals('feature-1', $key),
                     2 => $this->assertEquals('feature-2', $key),
+                    default => throw new \Exception(sprintf('Method "isEnabled" should call %d times', 2)),
                 };
 
                 return match ($matcher->numberOfInvocations()) {
                     1 => false,
                     2 => true,
+                    default => throw new \Exception(sprintf('Method "isEnabled" should call %d times', 2)),
                 };
             })
         ;

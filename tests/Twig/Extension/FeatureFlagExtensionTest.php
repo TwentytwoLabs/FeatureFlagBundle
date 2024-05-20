@@ -5,19 +5,15 @@ declare(strict_types=1);
 namespace TwentytwoLabs\FeatureFlagBundle\Tests\Twig\Extension;
 
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use TwentytwoLabs\FeatureFlagBundle\Manager\ChainedFeatureManager;
 use TwentytwoLabs\FeatureFlagBundle\Twig\Extension\FeatureFlagExtension;
 use Twig\TwigFunction;
 
-/**
- * @codingStandardsIgnoreFile
- *
- * @SuppressWarnings(PHPMD)
- */
-class FeatureFlagExtensionTest extends TestCase
+final class FeatureFlagExtensionTest extends TestCase
 {
-    private ChainedFeatureManager $manager;
+    private ChainedFeatureManager|MockObject $manager;
 
     protected function setUp(): void
     {
@@ -68,13 +64,18 @@ class FeatureFlagExtensionTest extends TestCase
         $this->assertNotSame($isEnabled, $twigFunctionCallable($feature));
     }
 
-    public static function getFeatures(): iterable
+    /**
+     * @return array<string, array<int, mixed>>
+     */
+    public static function getFeatures(): array
     {
-        yield 'existing feature' => ['foo', true];
-        yield 'non existing feature' => ['bar', false];
+        return [
+            'existing feature' => ['foo', true],
+            'non existing feature' => ['bar', false]
+        ];
     }
 
-    private function getTwigFunctionCallable($extension, string $functionName): callable
+    private function getTwigFunctionCallable(FeatureFlagExtension $extension, string $functionName): callable
     {
         foreach ($extension->getFunctions() as $twigFunction) {
             if ($twigFunction->getName() === $functionName) {

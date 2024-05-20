@@ -13,7 +13,7 @@ use TwentytwoLabs\FeatureFlagBundle\Manager\ChainedFeatureManager;
 use TwentytwoLabs\FeatureFlagBundle\Model\FeatureInterface;
 
 #[AsCommand(name: 'twentytwo-labs:feature-flag:list', description: 'List all features with their state')]
-class ListFeatureCommand extends Command
+final class ListFeatureCommand extends Command
 {
     private ChainedFeatureManager $manager;
 

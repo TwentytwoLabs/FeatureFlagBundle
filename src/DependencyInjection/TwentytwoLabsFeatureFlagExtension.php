@@ -19,7 +19,7 @@ class TwentytwoLabsFeatureFlagExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new Loader\PhpFileLoader($container, new FileLocator(sprintf('%s/../Resources/config', __DIR__)));
         $loader->load('commands.php');
         $loader->load('services.php');
         $loader->load('twig.php');

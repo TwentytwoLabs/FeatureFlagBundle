@@ -28,11 +28,15 @@ class ExpressionLanguageChecker
     public function isGranted(string $expression): bool
     {
         if (null === $this->expressionLanguage) {
-            throw new \LogicException('The "symfony/expression-language" library must be installed to use the "security" attribute.');
+            throw new \LogicException(
+                'The "symfony/expression-language" library must be installed to use the "security" attribute.'
+            );
         }
 
         if (null === $this->tokenStorage || null === $this->authenticationTrustResolver) {
-            throw new \LogicException('The "symfony/security" library must be installed to use the "security" attribute.');
+            throw new \LogicException(
+                'The "symfony/security" library must be installed to use the "security" attribute.'
+            );
         }
 
         if (null === $token = $this->tokenStorage->getToken()) {
@@ -55,6 +59,9 @@ class ExpressionLanguageChecker
         return (bool) $this->expressionLanguage->evaluate($expression, $variables);
     }
 
+    /**
+     * @return string[]
+     */
     private function getEffectiveRoles(TokenInterface $token): array
     {
         if (null === $this->roleHierarchy) {

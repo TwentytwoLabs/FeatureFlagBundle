@@ -4,16 +4,13 @@ declare(strict_types=1);
 
 namespace TwentytwoLabs\FeatureFlagBundle\Attribute;
 
-#[\Attribute(flags: \Attribute::TARGET_ALL | \Attribute::IS_REPEATABLE)]
-class Feature
+abstract class Feature
 {
-    private string $name;
-    private bool $enabled;
+    protected string $name;
 
-    public function __construct(string $name, bool $enabled = true)
+    public function __construct(string $name)
     {
         $this->name = $name;
-        $this->enabled = $enabled;
     }
 
     public function getName(): string
@@ -21,16 +18,16 @@ class Feature
         return $this->name;
     }
 
-    public function isEnabled(): bool
-    {
-        return $this->enabled;
-    }
-
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return [
             'feature' => $this->name,
-            'enabled' => $this->enabled,
+            'enabled' => $this->shouldBeEnabled(),
         ];
     }
+
+    abstract protected function shouldBeEnabled(): bool;
 }

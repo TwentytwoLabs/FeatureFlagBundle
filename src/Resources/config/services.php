@@ -7,7 +7,6 @@ use TwentytwoLabs\FeatureFlagBundle\Checker\ExpressionLanguageChecker;
 use TwentytwoLabs\FeatureFlagBundle\EventListener\ControllerListener;
 use TwentytwoLabs\FeatureFlagBundle\EventListener\FeatureListener;
 use TwentytwoLabs\FeatureFlagBundle\Factory\ArrayStorageFactory;
-use TwentytwoLabs\FeatureFlagBundle\Factory\OrmStorageFactory;
 use TwentytwoLabs\FeatureFlagBundle\Manager\ChainedFeatureManager;
 use TwentytwoLabs\FeatureFlagBundle\Manager\FeatureManagerInterface;
 
@@ -18,8 +17,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set('twenty-two-labs.feature-flags.factory.array', ArrayStorageFactory::class);
-    $services->set('twenty-two-labs.feature-flags.factory.orm', OrmStorageFactory::class)
-        ->args([service('doctrine.orm.default_entity_manager')->nullOnInvalid()]);
 
     $services->set('twenty-two-labs.feature-flags.checker.expression_language', ExpressionLanguageChecker::class)
         ->args([
