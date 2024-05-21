@@ -48,9 +48,9 @@ twentytwo_labs_feature_flag:
 
 The factories that come with this bundle can be found in the table below.
 
-| Factory service id                          | Options    |
-|---------------------------------------------|------------|
-| twenty-two-labs.feature-flags.factory.array | `features` |
+| Factory service id                        | How to Install                                   |
+|-------------------------------------------|--------------------------------------------------|
+| twenty-two-labs.feature-flags.factory.orm | composer require twentytwo-labs/orm-feature-flag |
 
 #### Example configuration
 
@@ -69,6 +69,7 @@ twentytwo_labs_feature_flag:
                     my_feature_2:
                         enabled: true
                         description: MyFeature2 description text
+                        expression: "is_granted('ROLE_ADMIN')"
                     my_feature3:
                         enabled: '%env(bool:FEATURE_ENVVAR)%'
                         description: MyFeature3 description text
@@ -101,6 +102,7 @@ twentytwo_labs_feature_flag:
                     my_feature_4:
                         enabled: false
                         description: MyFeature4 description text
+                        expression: "is_granted('ROLE_ADMIN')"
                     my_feature_5: []
                     my_feature_6: ~
                     my_feature_7: false

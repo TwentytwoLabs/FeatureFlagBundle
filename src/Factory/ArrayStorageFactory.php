@@ -38,7 +38,7 @@ final class ArrayStorageFactory extends AbstractStorageFactory
             }
 
             if (\is_array($features)) {
-                $feature = $features + $feature;
+                $feature = array_merge($feature, $features);
             }
 
             $options['features'][$name] = $feature;

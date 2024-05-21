@@ -74,7 +74,7 @@ final class ListFeatureCommandTest extends TestCase
                         ],
                     ],
                 ],
-                "bar --- [WARNING] No feature declared. foo --- ---------- --------- ----------------------- Name Enabled Description ---------- --------- ----------------------- feature1 Yes Feature 1 description feature2 No Feature 2 description ---------- --------- -----------------------",
+                "bar --- [WARNING] No feature declared. foo --- ---------- --------- ------------ ----------------------- Name Enabled Expression Description ---------- --------- ------------ ----------------------- feature1 Yes Feature 1 description feature2 No Feature 2 description ---------- --------- ------------ -----------------------",
             ],
         ];
     }

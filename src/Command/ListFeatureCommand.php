@@ -36,10 +36,15 @@ final class ListFeatureCommand extends Command
             }
 
             $table = $symfonyStyle->createTable();
-            $table->setHeaders(['Name', 'Enabled', 'Description']);
+            $table->setHeaders(['Name', 'Enabled', 'Expression', 'Description']);
             /** @var FeatureInterface $feature */
             foreach ($features as $feature) {
-                $table->addRow([$feature->getKey(), $feature->isEnabled() ? 'Yes' : 'No', $feature->getDescription()]);
+                $table->addRow([
+                    $feature->getKey(),
+                    $feature->isEnabled() ? 'Yes' : 'No',
+                    $feature->getExpression(),
+                    $feature->getDescription(),
+                ]);
             }
             $table->render();
 
