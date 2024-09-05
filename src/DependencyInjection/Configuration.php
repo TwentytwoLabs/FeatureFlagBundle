@@ -18,7 +18,13 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('default_manager')->defaultValue('default')->end()
+                ->arrayNode('cache')
+                    ->children()
+                        ->booleanNode('enabled')->defaultFalse()->end()
+                        ->scalarNode('provider')->defaultNull()->end()
+                        ->scalarNode('expires_after')->defaultValue(3600)->end()
+                    ->end()
+                ->end()
                 ->arrayNode('managers')
                     ->requiresAtLeastOneElement()
                     ->useAttributeAsKey('name')

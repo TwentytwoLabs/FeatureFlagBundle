@@ -10,6 +10,7 @@ use TwentytwoLabs\FeatureFlagBundle\EventListener\FeatureListener;
 use TwentytwoLabs\FeatureFlagBundle\Factory\ArrayStorageFactory;
 use TwentytwoLabs\FeatureFlagBundle\Manager\ChainedFeatureManager;
 use TwentytwoLabs\FeatureFlagBundle\Manager\FeatureManagerInterface;
+use TwentytwoLabs\FeatureFlagBundle\Storage\CachedStorage;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_iterator;
@@ -18,10 +19,15 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set('twenty-two-labs.feature-flags.factory.array', ArrayStorageFactory::class);
-    $services->set('twenty-two-labs.feature-flags.factory.orm', Bridge\Doctrine\Orm\Factory\OrmStorageFactory::class)
-        ->args([service('doctrine.orm.default_entity_manager')->nullOnInvalid()]);
+    $services
+        ->set('twenty-two-labs.feature-flags.factory.orm', Bridge\Doctrine\Orm\Factory\OrmStorageFactory::class)
+        ->args([service('doctrine.orm.default_entity_manager')->nullOnInvalid()])
+    ;
 
-    $services->set('twenty-two-labs.feature-flags.checker.expression_language', ExpressionLanguageChecker::class)
+    $services->set('twenty-two-labs.feature-flags.storage.cached', CachedStorage::class);
+
+    $services
+        ->set('twenty-two-labs.feature-flags.checker.expression_language', ExpressionLanguageChecker::class)
         ->args([
             service('security.expression_language')->nullOnInvalid(),
             service('security.authentication.trust_resolver')->nullOnInvalid(),
@@ -32,17 +38,25 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ])
     ;
 
-    $services->instanceof(FeatureManagerInterface::class)
-        ->tag('twenty-two-labs.feature-flags.manager');
+    $services
+        ->instanceof(FeatureManagerInterface::class)
+        ->tag('twenty-two-labs.feature-flags.manager')
+    ;
 
-    $services->set(ChainedFeatureManager::class)
-        ->args([tagged_iterator('twenty-two-labs.feature-flags.manager')]);
+    $services
+        ->set(ChainedFeatureManager::class)
+        ->args([tagged_iterator('twenty-two-labs.feature-flags.manager')])
+    ;
     $services->alias('twenty-two-labs.feature-flags.manager', ChainedFeatureManager::class);
 
-    $services->set(ControllerListener::class)
-        ->tag('kernel.event_subscriber');
+    $services
+        ->set(ControllerListener::class)
+        ->tag('kernel.event_subscriber')
+    ;
 
-    $services->set(FeatureListener::class)
+    $services
+        ->set(FeatureListener::class)
         ->args([service(ChainedFeatureManager::class)])
-        ->tag('kernel.event_subscriber');
+        ->tag('kernel.event_subscriber')
+    ;
 };

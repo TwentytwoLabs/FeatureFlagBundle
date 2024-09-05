@@ -15,7 +15,6 @@ final class ConfigurationTest extends AbstractExtensionConfigurationTestCase
     public function testShouldCheckEmptyConfiguration(): void
     {
         $expectedEmptyConfig = [
-            'default_manager' => 'default',
             'managers' => [],
         ];
 
@@ -27,7 +26,6 @@ final class ConfigurationTest extends AbstractExtensionConfigurationTestCase
     public function testShouldCheckConfiguration(): void
     {
         $expectedConfig = [
-            'default_manager' => 'manager_foo',
             'managers' => [
                 'manager_foo' => [
                     'factory' => 'novaway_feature_flag.factory.array',

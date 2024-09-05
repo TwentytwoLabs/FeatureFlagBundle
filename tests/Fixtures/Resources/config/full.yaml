@@ -1,5 +1,4 @@
 twentytwo_labs_feature_flag:
-   default_manager: manager_foo
    managers:
       manager_foo:
          factory: novaway_feature_flag.factory.array

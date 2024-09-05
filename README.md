@@ -35,7 +35,6 @@ To configure and register a feature manager you need a factory service. You may 
 ```yaml
 # ...
 twentytwo_labs_feature_flag:
-    default_manager: default
     managers:
         default:
             factory: 'twenty-two-labs.feature-flags.factory.array'
@@ -57,7 +56,6 @@ The factories that come with this bundle can be found in the table below.
 ```yaml
 # ...
 twentytwo_labs_feature_flag:
-    default_manager: default
     managers:
         default:
             factory: twenty-two-labs.feature-flags.factory.array
@@ -80,7 +78,6 @@ You can declare multiple managers. Multiple providers is useful if you want to u
 ```yaml
 # ...
 twentytwo_labs_feature_flag:
-    default_manager: manager_foo
     managers:
         manager_foo:
             factory: twenty-two-labs.feature-flags.factory.array
@@ -114,11 +111,23 @@ For example, the `manager_bar` is accessible with the following service name: `t
 
 Manager storage are also registered in the Symfony dependency injection container as services with the following naming convention: `twentytwo_labs_feature_flag.storage.<manager_name>`.
 
-#### Use it as a service
+#### Cache
 
-The bundle adds a global `twentytwo_labs_feature_flag.manager` service you can use in your PHP classes.
+You can cache, PSR6 compatible, all feature flags
 
-In the case you have defined several managers, the service use the `ChainedFeatureManager` class to chain all declared managers.
+```yaml
+twentytwo_labs_feature_flag:
+    cache:
+       enabled: true
+       provider: 'service_name'
+       expires_after: 3600 #default
+```
+
+### Use it
+
+#### As a service
+
+The bundle adds a global `ChainedFeatureManager` service you can use in your PHP classes.
 
 ```php
 use App\Controller;
@@ -126,7 +135,7 @@ use App\Controller;
 
 class MyController extends Controller
 {
-    public function myAction(FeatureManager $featureManager): Response
+    public function myAction(ChainedFeatureManager $featureManager): Response
     {
         if ($featureManager->isEnabled('my_feature_1')) {
             // my_feature_1 is enabled

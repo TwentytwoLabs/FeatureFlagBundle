@@ -20,6 +20,18 @@ final class ArrayStorageFactoryTest extends TestCase
         $factory = $this->getFactory();
         $factory->createStorage('foo');
     }
+    public function testShouldThrowExceptionBecauseFeaturesIsNotAnArray(): void
+    {
+        $this->expectException(ConfigurationException::class);
+        $this->expectExceptionMessage('Error while configure storage foo. Verify your configuration at "twenty-two-labs.feature-flags.storages.foo.options". The option "features" with value "Lorem Ipsum" is expected to be of type "array", but is of type "string"');
+
+        $options = [
+            'features' => 'Lorem Ipsum',
+        ];
+
+        $factory = $this->getFactory();
+        $factory->createStorage('foo', $options);
+    }
 
     public function testShouldCreateStorage(): void
     {
