@@ -47,9 +47,10 @@ twentytwo_labs_feature_flag:
 
 The factories that come with this bundle can be found in the table below.
 
-| Factory service id                        | How to Install                                   |
-|-------------------------------------------|--------------------------------------------------|
-| twenty-two-labs.feature-flags.factory.orm | composer require twentytwo-labs/orm-feature-flag |
+| Factory service id                                | How to Install                                           |
+|---------------------------------------------------|----------------------------------------------------------|
+| twenty-two-labs.feature-flags.factory.orm         | composer require twentytwo-labs/orm-feature-flag         |
+| twenty-two-labs.feature-flags.factory.api-service | composer require twentytwo-labs/api-service-feature-flag |
 
 #### Example configuration
 

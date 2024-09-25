@@ -16,6 +16,11 @@ final class ConfigurationTest extends AbstractExtensionConfigurationTestCase
     {
         $expectedEmptyConfig = [
             'managers' => [],
+            'cache' => [
+                'enabled' => false,
+                'provider' => null,
+                'expires_after' => 3600,
+            ],
         ];
 
         $this->assertProcessedConfigurationEquals(
@@ -48,6 +53,11 @@ final class ConfigurationTest extends AbstractExtensionConfigurationTestCase
                         ],
                     ],
                 ],
+            ],
+            'cache' => [
+                'enabled' => false,
+                'provider' => null,
+                'expires_after' => 3600,
             ],
         ];
 

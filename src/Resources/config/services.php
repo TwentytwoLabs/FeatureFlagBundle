@@ -23,6 +23,13 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ->set('twenty-two-labs.feature-flags.factory.orm', Bridge\Doctrine\Orm\Factory\OrmStorageFactory::class)
         ->args([service('doctrine.orm.default_entity_manager')->nullOnInvalid()])
     ;
+    $services
+        ->set(
+            'twenty-two-labs.feature-flags.factory.api-service',
+            Bridge\ApiService\Factory\ApiServiceStorageFactory::class
+        )
+        ->args([service('serializer')->nullOnInvalid()])
+    ;
 
     $services->set('twenty-two-labs.feature-flags.storage.cached', CachedStorage::class);
 
