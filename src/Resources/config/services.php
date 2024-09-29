@@ -21,7 +21,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set('twenty-two-labs.feature-flags.factory.array', ArrayStorageFactory::class);
     $services
         ->set('twenty-two-labs.feature-flags.factory.orm', Bridge\Doctrine\Orm\Factory\OrmStorageFactory::class)
-        ->args([service('doctrine.orm.default_entity_manager')->nullOnInvalid()])
+        ->args([
+            service('serializer')->nullOnInvalid(),
+            service('serializer')->nullOnInvalid(),
+            service('doctrine.orm.default_entity_manager')->nullOnInvalid(),
+        ])
     ;
     $services
         ->set(
